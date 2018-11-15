@@ -1,4 +1,5 @@
 import React from "react";
+import { DatePicker } from 'antd';
 import PropTypes from "prop-types";
 
 const Input = ({ label, text, type, id, value, handleChange }) => (
@@ -12,6 +13,7 @@ const Input = ({ label, text, type, id, value, handleChange }) => (
       onChange={handleChange}
       required
     />
+    <DatePicker />
   </div>
 );
 
