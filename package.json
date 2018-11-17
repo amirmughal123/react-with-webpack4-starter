@@ -36,6 +36,7 @@
     "webpack-dev-server": "^3.1.10"
   },
   "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
     "antd": "^3.10.7",
     "react-router-dom": "^4.3.1"
   }
