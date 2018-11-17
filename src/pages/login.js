@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { NavLink } from 'react-router-dom';
 import '../stylesheet/App.css';
 import { Row, Col, Form, Icon, Input, Button, Checkbox } from 'antd';
 const FormItem = Form.Item;
@@ -17,8 +18,8 @@ class Login extends Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <Row>
-        <Col span={24} align='middle' justify='center'>
+      <Row type="flex" justify="center" align="middle" style={{ height: '600px' }}>
+        <Col>
           <Form onSubmit={this.handleSubmit} className="login-form">
             <FormItem>
               {getFieldDecorator('userName', {
@@ -45,7 +46,7 @@ class Login extends Component {
               <Button type="primary" htmlType="submit" className="login-form-button">
                 Log in
               </Button>
-              Or <a href="">register now!</a>
+              Or <NavLink to='/register'>register now!</NavLink>
             </FormItem>
           </Form>
         </Col>
