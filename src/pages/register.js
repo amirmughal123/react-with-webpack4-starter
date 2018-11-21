@@ -1,6 +1,20 @@
 import React, { Component } from 'react';
 import '../stylesheet/App.css';
-import { Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete, Card } from 'antd';
+import { 
+  Form,
+  Input, 
+  Tooltip, 
+  Icon, 
+  Cascader, 
+  Select, 
+  Row, 
+  Col, 
+  Checkbox, 
+  Button, 
+  AutoComplete, 
+  Card,
+  notification 
+} from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const AutoCompleteOption = AutoComplete.Option;
@@ -13,6 +27,13 @@ class Register extends Component {
       autoCompleteResult: [],
     }
   }
+
+  openNotificationWithIcon = (type, msg) => {
+    notification[type]({
+      message: 'Authentication',
+      description: msg,
+    });
+  };
 
   handleSubmit = (e) => {
     e.preventDefault();
@@ -27,10 +48,16 @@ class Register extends Component {
             'Content-Type': 'application/json'
           },
           method: 'POST',
-          body: JSON.stringify(values)
+          body: JSON.stringify({ ...values, phoneNo: `${prefix}${phoneNo}` })
         })
         .then(response => response.json())
-        .then(data => {
+        .then(res => {
+          const { status, msg, data } = res;
+          if(status) {
+            this.openNotificationWithIcon('success', msg);
+          } else {
+            this.openNotificationWithIcon('error', msg);
+          }
           console.log('user created', data);
         }).catch((err) => {
           alert(err.message)
