@@ -15,6 +15,8 @@ import {
   Card,
   notification 
 } from 'antd';
+import { connect } from 'react-redux';
+import Actions from '../actions/AuthenticationActions';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const AutoCompleteOption = AutoComplete.Option;
@@ -28,6 +30,10 @@ class Register extends Component {
     }
   }
 
+  componentDidMount() {
+    console.log('ComponentdidMount :: props', this.props);
+  }
+
   openNotificationWithIcon = (type, msg) => {
     notification[type]({
       message: 'Authentication',
@@ -39,35 +45,26 @@ class Register extends Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
-        const { prefix, phoneNo } = values;
-
-        fetch('http://localhost:4000/api/v1/users', {
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          method: 'POST',
-          body: JSON.stringify({ ...values, phoneNo: `${prefix}${phoneNo}` })
-        })
-        .then(response => response.json())
-        .then(res => {
-          const { status, msg, data } = res;
-          if(status) {
-            this.openNotificationWithIcon('success', msg);
-          } else {
-            this.openNotificationWithIcon('error', msg);
-          }
-          console.log('user created', data);
-        }).catch((err) => {
-          alert(err.message)
-        })
+        const { dispatch } = this.props;
+        const { signUpAction } = Actions;
+        dispatch(signUpAction(values))
       }
     });
   }
 
   componentDidCatch(error) {
     console.log(error, 'error >>>')
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { user, fetched } = nextProps;
+    if(user) {
+      const { msg, status, fetched } = user;
+      if(fetched) {
+        if(status) this.openNotificationWithIcon('success', msg);
+        else this.openNotificationWithIcon('error', msg);
+      }
+    }
   }
 
   handleConfirmBlur = (e) => {
@@ -253,4 +250,8 @@ class Register extends Component {
 
 const WrappedNormalLoginForm = Form.create()(Register);
 
-export default WrappedNormalLoginForm;
+export default connect(
+  state => ({
+    user: state.user
+  })
+)(WrappedNormalLoginForm);
