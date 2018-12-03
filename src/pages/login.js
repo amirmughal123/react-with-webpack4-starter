@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import '../stylesheet/App.css';
 import { Row, Col, Form, Icon, Input, Button, Checkbox, Card } from 'antd';
+import Actions from '../actions/AuthenticationActions';
+import { connect } from 'react-redux';
+
 const FormItem = Form.Item;
 
 class Login extends Component {
@@ -11,6 +14,8 @@ class Login extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        const { dispatch } = this.props;
+        dispatch(Actions.signInAction(values));
       }
     });
   }
@@ -59,4 +64,8 @@ class Login extends Component {
 
 const WrappedNormalLoginForm = Form.create()(Login);
 
-export default WrappedNormalLoginForm;
+export default connect(
+  state => ({
+    user: state.user
+  })
+)(WrappedNormalLoginForm);
