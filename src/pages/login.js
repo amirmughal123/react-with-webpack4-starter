@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import '../stylesheet/App.css';
-import { Row, Col, Form, Icon, Input, Button, Checkbox, Card } from 'antd';
+import { Row, Col, Form, Icon, Input, Button, Checkbox, Card, notification } from 'antd';
 import Actions from '../actions/AuthenticationActions';
 import { connect } from 'react-redux';
 
@@ -9,15 +9,44 @@ const FormItem = Form.Item;
 
 class Login extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      init: true
+    }
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
         const { dispatch } = this.props;
+        this.setState({ init: false });
         dispatch(Actions.signInAction(values));
       }
     });
+  }
+
+  openNotificationWithIcon = (type, msg) => {
+    notification[type]({
+      message: 'Authentication',
+      description: msg,
+    });
+  };
+
+  componentWillReceiveProps(nextProps) {
+    console.log('CALLLED :: ', nextProps);
+    const { user } = nextProps;
+    const { init } = this.state;
+    if(user && !init) {
+      const { msg, status, fetched } = user;
+      if(fetched) {
+        if(status) this.openNotificationWithIcon('success', msg);
+        else this.openNotificationWithIcon('error', msg);
+      }
+      this.setState({ init: true });      
+    }
   }
 
   render() {

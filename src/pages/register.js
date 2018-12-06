@@ -27,6 +27,7 @@ class Register extends Component {
     this.state = {
       confirmDirty: false,
       autoCompleteResult: [],
+      init: true
     }
   }
 
@@ -47,6 +48,7 @@ class Register extends Component {
       if (!err) {
         const { dispatch } = this.props;
         const { signUpAction } = Actions;
+        this.setState({ init: false });
         dispatch(signUpAction(values))
       }
     });
@@ -57,13 +59,15 @@ class Register extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { user, fetched } = nextProps;
-    if(user) {
+    const { user } = nextProps;
+    const { init } = this.state;
+    if(user && !init) {
       const { msg, status, fetched } = user;
       if(fetched) {
         if(status) this.openNotificationWithIcon('success', msg);
         else this.openNotificationWithIcon('error', msg);
       }
+      this.setState({ init: true });
     }
   }
 
